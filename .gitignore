@@ -7,7 +7,6 @@
 *.pot
 *.pyc
 __pycache__/
-settings.py
 db.sqlite3
 media
 
@@ -134,5 +133,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# secret key
+secrets.json
 
 # End of https://www.gitignore.io/api/django
