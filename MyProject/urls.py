@@ -17,8 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
 
+from hello import views
+
 urlpatterns = [
-    url(r'^hello/', include('hello.urls')),
-    url(r'', include('hello.urls')),
+    url(r'^$', views.home),
+    url(r'^home/$', views.home, name='home'),
+    url(r'^record_list/$', views.record_list, name='record_list'),
+    url(r'^stream2/$', views.stream2, name='stream2'),
+    url(r'^stream/$', views.stream, name='stream'),
     path('admin/', admin.site.urls),
 ]

@@ -1,31 +1,50 @@
+import math
+
+from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
+
+class Board(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    description = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
-class Categories(models.Model):
-    Title = models.CharField(max_length=40, null=False)
 
 
-class TagModel(models.Model):
-    Title = models.CharField(max_length=20, null=False)
+class KidsTubeChannels(models.Model):
+    name = models.CharField(max_length=30, unique=True, null=False)
+    address = models.CharField(max_length=100, null=False)
+    rank = models.SmallIntegerField(unique=True, null=False)
+
+    def __str__(self):
+        return self.name
 
 
-class Entries(models.Model):
-    id = 0
-    Title = models.CharField(max_length=40, null=False)
-    Content = models.TextField(null=False)
-    created = models.DateTimeField(auto_now=True, auto_now_add=True)
-    Category = models.ForeignKey(Categories)
-    Tags = models.ManyToManyField(TagModel)
-    Comments = models.PositiveSmallInteger(default=0, null=True)
+class Topic(models.Model):
+    subject = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.subject
 
-class Comments(models.Model):
-    Name = models.CharField(max_length=20, null=False)
-    Password = models.CharField(max_length=32, null=False)
-    Content = models.TextField(max_length=2000, null=False)
-    created = models.DateTimeField(auto_now_add=True, auto_now=True)
-    Entry = models.ForeignKey(Entries)
+    def get_page_count(self):
+        count = self.posts.count()
+        pages = count / 20
+        return math.ceil(pages)
 
+    def has_many_pages(self, count=None):
+        if count is None:
+            count = self.get_page_count()
+        return count > 6
+
+    def get_page_range(self):
+        count = self.get_page_count()
+        if self.has_many_pages(count):
+            return range(1, 5)
+        return range(1, count + 1)
+
+    def get_last_ten_posts(self):
+        return self.posts.order_by('-created_at')[:10]
 

@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os, json
+import os
+import json
 from django.core.exceptions import ImproperlyConfigured
+from django.db.backends.mysql.base import DatabaseWrapper
+DatabaseWrapper.data_types['DateTimeField'] = 'datetime'  # fix for MySQL 5.5
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +35,7 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 
-def get_db_password(setting, secrets=secrets):
+def get_db_secret(setting, secrets=secrets):
     """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
     try:
         return secrets[setting]
@@ -77,7 +80,9 @@ ROOT_URLCONF = 'MyProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,12 +105,15 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE': 'mysql',
-        'NAME': 'goldskyocean',
-        'USER': 'goldskyocean',
-        'PASSWORD': get_db_password("DB_PASSWORD"),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_db_secret("DB_ID"),
+        'USER': get_db_secret("DB_ID"),
+        'PASSWORD': get_db_secret("DB_PASSWORD"),
+        'HOST': get_db_secret("DB_HOST"),
+        'PORT': get_db_secret("DB_PORT"),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  # strict mode 설정 추가
+        }
     }
 }
 

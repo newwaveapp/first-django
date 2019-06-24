@@ -11,6 +11,7 @@ from django.http import StreamingHttpResponse
 from django.views.decorators import gzip
 import cv2
 import time
+from .models import Board
 
 
 class VideoCamera(object):
@@ -36,7 +37,7 @@ class VideoCamera(object):
         while True:
             (self.grabbed, self.frame) = self.video.read()
 
-cam = VideoCamera()
+# cam = VideoCamera()
 
 
 def gen(camera):
@@ -51,19 +52,26 @@ def gen(camera):
 @gzip.gzip_page
 def stream2(request):
     try:
-        return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
+       return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
     except:  # This is bad! replace it with proper handling
         pass
 
-def stream(request):
-    template = loader.get_template('hello/stream.html')
+
+def record_list(request):
+    boards = Board.objects.all()
+    return render(request, 'record_list.html', {'boards': boards})
+
+
+def home(request):
+    template = loader.get_template('index.html')
     context = {
         'latest_question_list': "test",
     }
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('hello/index.html')
+
+def stream(request):
+    template = loader.get_template('stream.html')
     context = {
         'latest_question_list': "test",
     }

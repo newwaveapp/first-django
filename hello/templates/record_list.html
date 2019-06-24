@@ -28,12 +28,12 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">라파로 촬영 </div>
       <div class="list-group list-group-flush">
-        <a href="{% url 'stream' %}" class="list-group-item list-group-item-action bg-light">촬영하기</a>
-        <a href="{% url 'index' %}" class="list-group-item list-group-item-action bg-light">영상전송</a>
-        <a href="{% url 'index' %}" class="list-group-item list-group-item-action bg-light">팬돌리기</a>
-        <a href="{% url 'index' %}" class="list-group-item list-group-item-action bg-light">먹이주기</a>
-        <a href="{% url 'index' %}" class="list-group-item list-group-item-action bg-light">목소리전송</a>
-        <a href="{% url 'index' %}" class="list-group-item list-group-item-action bg-light">세팅</a>
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-light">촬영하기</a>
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-light">영상전송</a>
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-light">팬돌리기</a>
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-light">먹이주기</a>
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-light">목소리전송</a>
+        <a href="{% url 'record_list' %}" class="list-group-item list-group-item-action bg-light">녹화목록</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -71,10 +71,34 @@
         </div>
       </nav>
 
-      <div class="container-fluid">
-        <h1 class="mt-4">홈</h1>
-        <p>여기가 바뀌어야 함</p>
-      </div>
+      <div class="container">
+      <ol class="breadcrumb my-4">
+        <li class="breadcrumb-item active">Boards</li>
+      </ol>
+      <table class="table">
+        <thead class="thead-inverse">
+          <tr>
+            <th>Board</th>
+            <th>Posts</th>
+            <th>Topics</th>
+            <th>Last Post</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for board in boards %}
+            <tr>
+              <td>
+                {{ board.name }}
+                <small class="text-muted d-block">{{ board.description }}</small>
+              </td>
+              <td class="align-middle">0</td>
+              <td class="align-middle">0</td>
+              <td></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     </div>
     <!-- /#page-content-wrapper -->
 
